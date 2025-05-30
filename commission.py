@@ -27,21 +27,21 @@ with open(sys.argv[1], "r") as f:
     config = json.load(f)
     commqtt = None
     for subset in config["subsets"]:
-        if subset["name"] == "commqtt":
-            commqtt = subset["fields"]
-    if commqtt is None:
+        if subset["name"] == "main":
+            main = subset["fields"]
+    if main is None:
         print("commqtt subset not found in %s" % sys.argv[1])
         sys.exit(-1)
     make_config_fs()
-    commqtt = json.dumps(commqtt, indent=4)
-    with open(os.path.join(current_root, "commqtt.json"), "w") as out:
-        out.write(commqtt)
+    main = json.dumps(main, indent=4)
+    with open(os.path.join(current_root, "main.json"), "w") as out:
+        out.write(main)
     # Write the subset hash file
-    hashed_string = hashlib.sha256(commqtt.encode('utf-8')).hexdigest()
+    hashed_string = hashlib.sha256(main.encode('utf-8')).hexdigest()
     # Write the subset hash file
-    with open(current_root + "/commqtt.sha256", 'w') as f:
+    with open(current_root + "/main.sha256", 'w') as f:
         f.write(hashed_string)    
     # Create log records
-    print("Generated OAM MQTT subset data: " + commqtt)
+    print("Generated OAM MQTT subset data: " + main)
     print("Generated OAM MQTT subset hash: " + hashed_string)
     print("MQTT config migration success")
